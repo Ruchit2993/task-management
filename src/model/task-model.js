@@ -74,6 +74,20 @@ const Task = sequelize.define("Task", {
 export default Task;
 
 /*
- CREATE TABLE IF NOT EXISTS `tasks` (`id` INTEGER NOT NULL auto_increment , `status_id` INTEGER NOT NULL, `status_code` VARCHAR(50) NOT NULL, `name` VARCHAR(100) NOT NULL, `description` TEXT, `assigned_by` INTEGER, `assigned_to` INTEGER, `due_date` DATETIME, `created_at` DATETIME, `updated_at` DATETIME, `deleted_at` DATETIME, `created_by` INTEGER, `updated_by` INTEGER, `deleted_by` INTEGER, PRIMARY KEY (`id`)) ENGINE=InnoDB;
+ CREATE TABLE IF NOT EXISTS `tasks` (`id` INTEGER NOT NULL auto_increment ,
+`status_id` INTEGER NOT NULL,
+`status_code` VARCHAR(50) NOT NULL, 
+`name` VARCHAR(100) NOT NULL, 
+`description` TEXT, 
+`assigned_by` INTEGER,
+`assigned_to` INTEGER, 
+`due_date` DATETIME,
+`created_at` DATETIME, 
+`updated_at` DATETIME, 
+`deleted_at` DATETIME,
+`created_by` INTEGER,
+`updated_by` INTEGER,
+`deleted_by` INTEGER,
+PRIMARY KEY (`id`)) ENGINE=InnoDB;
 Executing (default): SHOW INDEX FROM `tasks`
 */

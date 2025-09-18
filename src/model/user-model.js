@@ -1,6 +1,5 @@
 import { sequelize } from "../config/dbConnect.js";
 import { DataTypes, Model } from "sequelize";
-// import { createUser } from "../controllers/userUtil.js";
 
 const User = sequelize.define("User", {
   id: {
@@ -16,12 +15,12 @@ const User = sequelize.define("User", {
   email: {
     type: DataTypes.STRING(50),
     allowNull: false,
-    unique: true,
+    // unique: true,
   },
   contact: {
     type: DataTypes.STRING(12),
     allowNull: true,
-    unique: true,
+    // unique: true,
   },
   password: {
     type: DataTypes.STRING,
@@ -70,11 +69,29 @@ const User = sequelize.define("User", {
   tableName: "users",   // table name in DB
   timestamps: true,    // we’re handling timestamps manually
   underscored: true,    // match snake_case columns
-  paranoid: false       // you already have deleted_at handling
+  paranoid: false,      // you already have deleted_at handling
+  indexes: [
+    { unique: true, fields: ["email"] },
+    { unique: true, fields: ["contact"] }
+  ]
 });
 
 export default User;
 
-/*CREATE TABLE IF NOT EXISTS `users` (`id` INTEGER NOT NULL auto_increment , `name` VARCHAR(50) NOT NULL, `email` VARCHAR(50) NOT NULL UNIQUE, `contact` VARCHAR(12) UNIQUE, `password` VARCHAR(255) NOT NULL, `is_admin` TINYINT NOT NULL DEFAULT 1, `is_first_login` TINYINT NOT NULL DEFAULT 0, `status` TINYINT NOT NULL DEFAULT 1, `created_at` DATETIME, `updated_at` DATETIME, `deleted_at` DATETIME, `created_by` INTEGER, `updated_by` INTEGER, `deleted_by` INTEGER, PRIMARY KEY (`id`)) ENGINE=InnoDB;
+/*CREATE TABLE IF NOT EXISTS `users` (`id` INTEGER NOT NULL auto_increment , 
+`name` VARCHAR(50) NOT NULL,
+`email` VARCHAR(50) NOT NULL UNIQUE, 
+`contact` VARCHAR(12) UNIQUE, 
+`password` VARCHAR(255) NOT NULL, 
+`is_admin` TINYINT NOT NULL DEFAULT 1, 
+`is_first_login` TINYINT NOT NULL DEFAULT 0,
+`status` TINYINT NOT NULL DEFAULT 1, 
+`created_at` DATETIME,
+`updated_at` DATETIME,
+`deleted_at` DATETIME,
+`created_by` INTEGER, 
+`updated_by` INTEGER, 
+`deleted_by` INTEGER,
+PRIMARY KEY (`id`)) ENGINE=InnoDB;
 SHOW INDEX FROM `users`
 */

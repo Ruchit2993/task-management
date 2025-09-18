@@ -65,6 +65,15 @@ const StatusMaster = sequelize.define("StatusMaster", {
 export default StatusMaster;
 
 /*
-CREATE TABLE IF NOT EXISTS `tasks` (`id` INTEGER NOT NULL auto_increment , `status_id` INTEGER NOT NULL, `status_code` VARCHAR(50) NOT NULL, `name` VARCHAR(100) NOT NULL, `description` TEXT, `assigned_by` INTEGER, `assigned_to` INTEGER, `due_date` DATETIME, `created_at` DATETIME, `updated_at` DATETIME, `deleted_at` DATETIME, `created_by` INTEGER, `updated_by` INTEGER, `deleted_by` INTEGER, PRIMARY KEY (`id`)) ENGINE=InnoDB;
-Executing (default): CREATE TABLE IF NOT EXISTS `status_master` (`status_id` INTEGER NOT NULL auto_increment , `code` VARCHAR(50) NOT NULL DEFAULT 'TO_DO', `status_name` VARCHAR(50) NOT NULL DEFAULT 'to_do', `status` TINYINT DEFAULT 1, `created_at` DATETIME, `updated_at` DATETIME, `deleted_at` DATETIME, `created_by` INTEGER, `updated_by` INTEGER, `deleted_by` INTEGER, PRIMARY KEY (`status_id`)) ENGINE=InnoDB;
+Executing (default): CREATE TABLE IF NOT EXISTS `status_master` (`status_id` INTEGER NOT NULL auto_increment ,
+`code` VARCHAR(50) NOT NULL DEFAULT 'TO_DO',
+`status_name` VARCHAR(50) NOT NULL DEFAULT 'to_do',
+`status` TINYINT DEFAULT 1,
+`created_at` DATETIME,
+`updated_at` DATETIME,
+`deleted_at` DATETIME,
+`created_by` INTEGER,
+`updated_by` INTEGER,
+`deleted_by` INTEGER, 
+PRIMARY KEY (`status_id`)) ENGINE=InnoDB;
 */

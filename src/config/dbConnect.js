@@ -1,6 +1,7 @@
 import 'dotenv/config';
 // import dotenv from 'dotenv';
 import Sequelize from 'sequelize';
+import messages from './messages.js';
 // dotenv.config();
 
 const sequelize = new Sequelize(process.env.DB_DBNAME, process.env.DB_USERNAME, process.env.DB_PASSWWORD, {
@@ -10,9 +11,9 @@ const sequelize = new Sequelize(process.env.DB_DBNAME, process.env.DB_USERNAME, 
 async function testConnection() {
     try {
         await sequelize.authenticate();
-        console.log('Connection has been established successfully.');
+        console.log(messages.SUCCESS.DB_CONN_SUCCESS);
     } catch (error) {
-        console.error('Unable to connect to the database:', error);
+        console.error(messages.ERROR.DB_CONN_ERR, error);
     }
 }
 

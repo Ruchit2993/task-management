@@ -69,13 +69,25 @@ const TeamMember = sequelize.define("TeamMember", {
   },
 }, {
   tableName: "team_member",
-  timestamps: true,   
-  underscored: true,  
-  paranoid: false,    
+  timestamps: true,
+  underscored: true,
+  paranoid: false,
 });
 
 export default TeamMember;
 
 /*
-CREATE TABLE IF NOT EXISTS `team_member` (`team_member_id` INTEGER NOT NULL auto_increment , `name` VARCHAR(50) NOT NULL, `desc` TEXT NOT NULL, `status` TINYINT NOT NULL DEFAULT 1, `status_code` VARCHAR(50) NOT NULL, `user_id` INTEGER NOT NULL, `task_id` INTEGER NOT NULL, `created_at` DATETIME, `updated_at` DATETIME, `deleted_at` DATETIME, `created_by` INTEGER, `updated_by` INTEGER, `deleted_by` INTEGER, PRIMARY KEY (`team_member_id`)) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS `team_member` (`team_member_id` INTEGER NOT NULL auto_increment ,
+`name` VARCHAR(50) NOT NULL, `desc` TEXT NOT NULL,
+`status` TINYINT NOT NULL DEFAULT 1,
+`status_code` VARCHAR(50) NOT NULL,
+`user_id` INTEGER NOT NULL,
+`task_id` INTEGER NOT NULL, 
+`created_at` DATETIME,
+`updated_at` DATETIME,
+`deleted_at` DATETIME, 
+`created_by` INTEGER,
+`updated_by` INTEGER,
+`deleted_by` INTEGER,
+PRIMARY KEY (`team_member_id`)) ENGINE=InnoDB;
 */
