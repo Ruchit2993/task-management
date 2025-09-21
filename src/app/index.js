@@ -1,4 +1,4 @@
-// import dotenv from 'dotenv';
+import dotenv from 'dotenv';
 import express from 'express';
 import { sequelize, testConnection } from '../config/dbConnect.js';
 import requestLogger from "../middlewares/requestLogger.js"
@@ -7,7 +7,7 @@ import router from '../modules/route.js'
 // import Task from '../model/task-model.js';
 // import StatusMaster from '../model/status-master-model.js';
 // import TeamMember from '../model/team-member-model.js';
-// dotenv.config();
+dotenv.config();
 
 const PORT = process.env.PORT
 const app = express();

@@ -9,7 +9,11 @@ const messages = {
     USER_REGISTERED: "User registered successfully. Please change password.",
     USER_RETRIEVED: "User(s) retrieved successfully.",
     USER_UPDATED: "User updated successfully.",
-    USER_DELETED: "User deleted successfully."
+    USER_DELETED: "User deleted successfully.",
+    STATUS_RETRIEVED: "Status(es) retrieved successfully.",
+    STATUS_CREATED: "Status created successfully.",
+    STATUS_UPDATED: "Status updated successfully.",
+    STATUS_DELETED: "Status deleted successfully.",
   },
 
   ERROR: {
@@ -30,15 +34,18 @@ const messages = {
     INVALID_TOKEN: "Invalid token",
     TOKEN_FORMAT: "Token format invalid",
     ADMIN_REQUIRED: "Admin access required",
-    CONTACT_EXISTS: "Contact already exists"
+    CONTACT_EXISTS: "Contact already exists",
+    STATUS_NOT_FOUND: "Status not found.",
+    CODE_NAME_REQUIRED: "Code and name are required.",
+    CODE_EXISTS: "Status code already exists.",
   },
 
   INFO: {
     CHANGE_PASS: "Please change your password first",
     REQ_BODY: "Request body is missing or invalid",
     NEWPASS_CONFPASS: "New password and confirm password are required",
-    REDIRECT_CHANGE_PASS: "Redirect to /auth/change-pass to reset password"
-  }
+    REDIRECT_CHANGE_PASS: "Redirect to /auth/change-pass to reset password",
+  },
 };
 
 export default messages;
