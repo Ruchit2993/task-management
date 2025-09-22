@@ -1,5 +1,6 @@
 import { sequelize } from "../config/dbConnect.js";
 import { DataTypes, Model } from "sequelize";
+// import Task from "./task-model.js";
 
 class StatusMaster extends Model {}
 
@@ -25,6 +26,11 @@ StatusMaster.init(
       type: DataTypes.TINYINT,
       allowNull: true,
       defaultValue: 1,
+    },
+    deleted: {
+      type: DataTypes.TINYINT,
+      allowNull: false,
+      defaultValue: 0,
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -52,11 +58,6 @@ StatusMaster.init(
       type: DataTypes.INTEGER,
       allowNull: true,
     },
-    deleted: {
-      type: DataTypes.TINYINT,
-      allowNull: false,
-      defaultValue: 0,
-    },
   },
   {
     sequelize,
@@ -65,13 +66,14 @@ StatusMaster.init(
     timestamps: true,
     underscored: true,
     paranoid: false,
+      indexes: [
+    { unique: true, fields: ["code"] }
+      ]
   }
 );
 
-// Associations
-// StatusMaster.hasMany(Task, { foreignKey: "status", sourceKey: "code" });
-
 export default StatusMaster;
+
 
 /*
 Executing (default): CREATE TABLE IF NOT EXISTS `status_master` (`status_id` INTEGER NOT NULL auto_increment ,

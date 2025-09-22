@@ -1,5 +1,8 @@
 import { sequelize } from "../config/dbConnect.js";
 import { DataTypes, Model } from "sequelize";
+// import User from "./user-model.js";
+// import TeamMember from "./team-member-model.js";
+import StatusMaster from "./status-master-model.js";
 
 class Task extends Model {}
 
@@ -27,6 +30,11 @@ Task.init(
       type: DataTypes.DATE,
       allowNull: true,
     },
+    deleted: {
+      type: DataTypes.TINYINT,
+      allowNull: false,
+      defaultValue: 0,
+    },
     createdAt: {
       type: DataTypes.DATE,
       allowNull: false,
@@ -53,11 +61,6 @@ Task.init(
       type: DataTypes.INTEGER,
       allowNull: true,
     },
-    deleted: {
-      type: DataTypes.TINYINT,
-      allowNull: false,
-      defaultValue: 0,
-    },
   },
   {
     sequelize,
@@ -69,11 +72,8 @@ Task.init(
   }
 );
 
-// Task.belongsTo(StatusMaster, { foreignKey: "status", targetKey: "code" });
-// Task.hasMany(TeamMember, { foreignKey: "taskId" });
-// Task.belongsTo(User, { foreignKey: "createdBy", as: "creator" });
-// Task.belongsTo(User, { foreignKey: "updatedBy", as: "updater" });
-// Task.belongsTo(User, { foreignKey: "deletedBy", as: "deleter" });
+Task.belongsTo(StatusMaster, { foreignKey: "status", targetKey: "code" });
+StatusMaster.hasMany(Task, { foreignKey: "status", sourceKey: "code" });
 
 export default Task;
 

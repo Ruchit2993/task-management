@@ -1,21 +1,9 @@
+import User from '../model/user-model.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import User from '../model/user-model.js';
 import messages from '../config/messages.js';
 
-const generateToken = (user) => {
-  return jwt.sign(
-    { id: user.id, isAdmin: user.isAdmin },
-    process.env.JWT_SECRET
-    // { expiresIn: '1h' }
-  );
-};
-
 const register = async (req, res) => {
-  if (!req.body) {
-    return res.status(400).json({ message: messages.ERROR.REQ_BODY_ERR });
-  }
-
   const { name, email, contact, password } = req.body;
 
   if (!name || !email || !password) {
@@ -23,51 +11,35 @@ const register = async (req, res) => {
   }
 
   try {
-    // Check for existing email
-    const existingEmail = await User.findOne({ where: { email, deleted: 0 } });
-    if (existingEmail) {
+    const existingUser = await User.findOne({ where: { email, deleted: 0 } });
+    if (existingUser) {
       return res.status(400).json({ message: messages.ERROR.EMAIL_EXISTS });
     }
 
-    // Check for existing contact if provided
-    if (contact) {
-      const existingContact = await User.findOne({ where: { contact, deleted: 0 } });
-      if (existingContact) {
-        return res.status(400).json({ message: messages.ERROR.CONTACT_EXISTS });
-      }
+    const existingContact = contact ? await User.findOne({ where: { contact, deleted: 0 } }) : null;
+    if (existingContact) {
+      return res.status(400).json({ message: messages.ERROR.CONTACT_EXISTS });
     }
 
-    const userCount = await User.count({ where: { deleted: 0 } });
-    const isAdmin = userCount === 0 ? 1 : 0; // First user is admin
     const hashedPassword = await bcrypt.hash(password, 10);
-
     const user = await User.create({
       name,
       email,
       contact,
       password: hashedPassword,
-      isAdmin,
-      isFirstLogin: 1, // Must change password
+      isFirstLogin: 1,
+      isAdmin: 0,
       status: 1,
       deleted: 0,
     });
 
-    const token = generateToken(user);
-    return res.status(201).json({
-      message: messages.SUCCESS.USER_REGISTERED,
-      userId: user.id,
-      token,
-    });
+    return res.status(201).json({ message: messages.SUCCESS.USER_REGISTERED });
   } catch (error) {
     return res.status(500).json({ message: messages.ERROR.SERVER_ERROR, error: error.message });
   }
 };
 
 const login = async (req, res) => {
-  if (!req.body) {
-    return res.status(400).json({ message: messages.ERROR.REQ_BODY_ERR });
-  }
-
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -77,35 +49,35 @@ const login = async (req, res) => {
   try {
     const user = await User.findOne({ where: { email, deleted: 0 } });
     if (!user) {
-      return res.status(400).json({ message: messages.ERROR.INVALID_EM_PASS });
+      return res.status(401).json({ message: messages.ERROR.INVALID_EM_PASS });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: messages.ERROR.INVALID_EM_PASS });
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: messages.ERROR.INVALID_EM_PASS });
     }
 
-    if (user.isFirstLogin) {
-      return res.status(403).json({ message: messages.INFO.CHANGE_PASS });
-    }
+    const token = jwt.sign(
+      { id: user.id, isAdmin: user.isAdmin },
+      process.env.JWT_SECRET || 'task_management_secret',
+      { expiresIn: '24h' }
+    );
 
-    const token = generateToken(user);
-    return res.status(200).json({ message: messages.SUCCESS.LOGIN_SUCCESS, token });
+    return res.status(200).json({
+      message: messages.SUCCESS.LOGIN_SUCCESS,
+      token,
+      isFirstLogin: user.isFirstLogin,
+    });
   } catch (error) {
     return res.status(500).json({ message: messages.ERROR.SERVER_ERROR, error: error.message });
   }
 };
 
 const changePassword = async (req, res) => {
-  if (!req.body) {
-    return res.status(400).json({ message: messages.INFO.REQ_BODY });
-  }
-
   const { oldPassword, newPassword, confirmPassword } = req.body;
-  const userId = req.user.id;
 
-  if (!newPassword || !confirmPassword) {
-    return res.status(400).json({ message: messages.INFO.NEWPASS_CONFPASS });
+  if (!oldPassword || !newPassword || !confirmPassword) {
+    return res.status(400).json({ message: messages.ERROR.NEWPASS_CONFPASS });
   }
 
   if (newPassword !== confirmPassword) {
@@ -113,20 +85,58 @@ const changePassword = async (req, res) => {
   }
 
   try {
-    const user = await User.findOne({ where: { id: userId, deleted: 0 } });
+    const user = await User.findOne({ where: { id: req.user.id, deleted: 0 } });
     if (!user) {
       return res.status(404).json({ message: messages.ERROR.USER_NOT_FOUND });
     }
 
-    if (oldPassword) {
-      const isMatch = await bcrypt.compare(oldPassword, user.password);
-      if (!isMatch) {
-        return res.status(400).json({ message: messages.ERROR.INVALID_OLD_PASS });
-      }
+    const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: messages.ERROR.INVALID_OLD_PASS });
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    await user.update({ password: hashedPassword, isFirstLogin: 0 });
+    await user.update({
+      password: hashedPassword,
+      isFirstLogin: 0,
+      updatedAt: new Date(),
+      updatedBy: req.user.id,
+    });
+
+    return res.status(200).json({ message: messages.SUCCESS.PASSWORD_CHANGED });
+  } catch (error) {
+    return res.status(500).json({ message: messages.ERROR.SERVER_ERROR, error: error.message });
+  }
+};
+
+const firstChangePassword = async (req, res) => {
+  const { newPassword, confirmPassword } = req.body;
+
+  if (!newPassword || !confirmPassword) {
+    return res.status(400).json({ message: messages.ERROR.NEWPASS_CONFPASS });
+  }
+
+  if (newPassword !== confirmPassword) {
+    return res.status(400).json({ message: messages.ERROR.PASSWORD_NOT_MATCH });
+  }
+
+  try {
+    const user = await User.findOne({ where: { id: req.user.id, deleted: 0 } });
+    if (!user) {
+      return res.status(404).json({ message: messages.ERROR.USER_NOT_FOUND });
+    }
+
+    if (!user.isFirstLogin) {
+      return res.status(400).json({ message: messages.ERROR.NOT_FIRST_LOGIN });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await user.update({
+      password: hashedPassword,
+      isFirstLogin: 0,
+      updatedAt: new Date(),
+      updatedBy: req.user.id,
+    });
 
     return res.status(200).json({ message: messages.SUCCESS.PASSWORD_CHANGED });
   } catch (error) {
@@ -135,14 +145,10 @@ const changePassword = async (req, res) => {
 };
 
 const forgotPassword = async (req, res) => {
-  if (!req.body) {
-    return res.status(400).json({ message: messages.ERROR.REQ_BODY_ERR });
-  }
-
   const { email } = req.body;
 
   if (!email) {
-    return res.status(400).json({ message: messages.ERROR.VALIDATION_ERROR });
+    return res.status(400).json({ message: messages.ERROR.REQ_EM_PASS });
   }
 
   try {
@@ -158,14 +164,10 @@ const forgotPassword = async (req, res) => {
 };
 
 const resetPassword = async (req, res) => {
-  if (!req.body) {
-    return res.status(400).json({ message: messages.ERROR.REQ_BODY_ERR });
-  }
-
   const { email, newPassword, confirmPassword } = req.body;
 
   if (!email || !newPassword || !confirmPassword) {
-    return res.status(400).json({ message: messages.ERROR.VALIDATION_ERROR });
+    return res.status(400).json({ message: messages.ERROR.REQ_EM_PASS });
   }
 
   if (newPassword !== confirmPassword) {
@@ -179,7 +181,11 @@ const resetPassword = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    await user.update({ password: hashedPassword, isFirstLogin: 0 });
+    await user.update({
+      password: hashedPassword,
+      isFirstLogin: 0,
+      updatedAt: new Date(),
+    });
 
     return res.status(200).json({ message: messages.SUCCESS.PASSWORD_RESET });
   } catch (error) {
@@ -187,4 +193,4 @@ const resetPassword = async (req, res) => {
   }
 };
 
-export { register, login, changePassword, forgotPassword, resetPassword };
+export { register, login, changePassword, firstChangePassword, forgotPassword, resetPassword };

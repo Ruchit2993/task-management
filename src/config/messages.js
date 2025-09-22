@@ -14,6 +14,9 @@ const messages = {
     STATUS_CREATED: "Status created successfully.",
     STATUS_UPDATED: "Status updated successfully.",
     STATUS_DELETED: "Status deleted successfully.",
+    TASK_RETRIEVED: "Task(s) retrieved successfully.",
+    TASK_UPDATED: "Task updated successfully.",
+    TASK_DELETED: "Task deleted successfully.",
   },
 
   ERROR: {
@@ -38,6 +41,10 @@ const messages = {
     STATUS_NOT_FOUND: "Status not found.",
     CODE_NAME_REQUIRED: "Code and name are required.",
     CODE_EXISTS: "Status code already exists.",
+    TASK_NOT_FOUND: "Task not found.",
+    NAME_REQUIRED: "Name is required.",
+    INVALID_STATUS: "Invalid status code.",
+    NOT_FIRST_LOGIN: "This endpoint is only for first-time password changes.",
   },
 
   INFO: {

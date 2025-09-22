@@ -1,8 +1,9 @@
 import express from 'express';
-import { register, login, changePassword, forgotPassword, resetPassword } from '../controllers/authController.js';
+import { register, login, changePassword, forgotPassword, resetPassword, firstChangePassword } from '../controllers/authController.js';
 import { getAllUsers, getUserById, updateUser, patchUser, deleteUser } from '../controllers/userController.js';
 import { verifyToken, isAdmin } from '../middlewares/authMiddleware.js';
 import { getAllStatuses, getStatusByCode, createStatus, updateStatus, patchStatus, deleteStatus } from '../controllers/statusMasterController.js';
+import {getAllTasks,getTasksByQuery,getTasksByStatus,getTaskById,createTask,updateTask,patchTask,deleteTask} from '../controllers/taskController.js';
 const router = express.Router();
 
 router.get('/greet', (req, res) => {
@@ -13,6 +14,7 @@ router.get('/greet', (req, res) => {
 router.post('/auth/register', register);
 router.post('/auth/login', login);
 router.post('/auth/change-pass', verifyToken, changePassword);
+router.post('/auth/first-change-pass', verifyToken, firstChangePassword);
 router.post('/auth/forgot-pass', forgotPassword);
 router.post('/auth/reset-pass', resetPassword);
 
@@ -32,5 +34,14 @@ router.put('/status/:code', verifyToken, isAdmin, updateStatus);
 router.patch('/status/:code', verifyToken, isAdmin, patchStatus);
 router.delete('/status/:code', verifyToken, isAdmin, deleteStatus);
 
+// Task Routes
+router.get('/tasks', verifyToken, getAllTasks);
+router.get('/task', verifyToken, getTasksByQuery); // Query-based filtering
+router.get('/task/:status', verifyToken, getTasksByStatus);
+router.get('/tasks/:id', verifyToken, getTaskById);
+router.post('/tasks', verifyToken, isAdmin, createTask);
+router.put('/tasks/:id', verifyToken, isAdmin, updateTask);
+router.patch('/tasks/:id', verifyToken, isAdmin, patchTask);
+router.delete('/tasks/:id', verifyToken, isAdmin, deleteTask);
 
 export default router;

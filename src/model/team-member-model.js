@@ -1,5 +1,7 @@
 import { sequelize } from "../config/dbConnect.js";
 import { DataTypes, Model } from "sequelize";
+// import User from "./user-model.js";
+import Task from "./task-model.js";
 
 class TeamMember extends Model {}
 
@@ -24,6 +26,11 @@ TeamMember.init(
       allowNull: false,
       defaultValue: DataTypes.NOW,
     },
+    deleted: {
+      type: DataTypes.TINYINT,
+      allowNull: false,
+      defaultValue: 0,
+    },
     updatedAt: {
       type: DataTypes.DATE,
       allowNull: false,
@@ -37,11 +44,6 @@ TeamMember.init(
       type: DataTypes.INTEGER,
       allowNull: true,
     },
-    deleted: {
-      type: DataTypes.TINYINT,
-      allowNull: false,
-      defaultValue: 0,
-    },
   },
   {
     sequelize,
@@ -53,9 +55,7 @@ TeamMember.init(
   }
 );
 
-// Associations
-// TeamMember.belongsTo(User, { foreignKey: "userId" });
-// TeamMember.belongsTo(Task, { foreignKey: "taskId" });
+Task.hasMany(TeamMember, { foreignKey: "taskId" });
 
 
 export default TeamMember;

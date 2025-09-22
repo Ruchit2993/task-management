@@ -23,6 +23,7 @@ testConnection();
 // TeamMember.sync({force: true});
 
 
+// await sequelize.sync({force: true}); 
 await sequelize.sync({alter: true}); 
 
 console.log(process.env.JWT_SECRET)

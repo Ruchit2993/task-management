@@ -103,7 +103,7 @@ const deleteUser = async (req, res) => {
       deletedBy: req.user.id,
     });
     return res.status(200).json({ message: messages.SUCCESS.USER_DELETED });
-  } catch (error) {
+  } catch (error) { 
     return res.status(500).json({ message: messages.ERROR.SERVER_ERROR, error: error.message });
   }
 };
