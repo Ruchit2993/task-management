@@ -1,7 +1,7 @@
 import { sequelize } from "../config/dbConnect.js";
 import { DataTypes, Model } from "sequelize";
-import TeamMember from "./team-member-model.js";
-import Task from "./task-model.js";
+import TeamMember from "./team-member.model.js";
+import Task from "./task.model.js";
 
 class User extends Model {}
 

@@ -1,36 +1,57 @@
-import Task from '../model/task-model.js';
-import StatusMaster from '../model/status-master-model.js';
+import Task from '../model/task.model.js';
+import StatusMaster from '../model/status-master.model.js';
 import messages from '../config/messages.js';
 
 const getAllTasks = async (req, res) => {
+
   try {
-    const tasks = await Task.findAll({
-      attributes: ['id', 'name', 'description', 'status', 'dueDate', 'createdAt', 'updatedAt'],
-      where: { deleted: 0 },
-      include: [{ model: StatusMaster, attributes: ['code', 'name'], where: { deleted: 0 } }],
-    });
-    return res.status(200).json({ message: messages.SUCCESS.TASK_RETRIEVED, tasks });
+    if (req.query) {
+      const { status } = req.query;
+      try {
+        const where = { deleted: 0 };
+        if (status) where.status = status;
+
+        const tasks = await Task.findAll({
+          attributes: ['id', 'name', 'description', 'status', 'dueDate', 'createdAt', 'updatedAt'],
+          where,
+          include: [{ model: StatusMaster, attributes: ['code', 'name'], where: { deleted: 0 } }],
+        });
+        return res.status(200).json({ message: messages.SUCCESS.TASK_RETRIEVED, tasks });
+      } catch (error) {
+        return res.status(500).json({ message: messages.ERROR.SERVER_ERROR, error: error.message });
+      }
+
+    }
+    else {
+      const tasks = await Task.findAll({
+        attributes: ['id', 'name', 'description', 'status', 'dueDate', 'createdAt', 'updatedAt'],
+        where: { deleted: 0 },
+        include: [{ model: StatusMaster, attributes: ['code', 'name'], where: { deleted: 0 } }],
+      });
+      return res.status(200).json({ message: messages.SUCCESS.TASK_RETRIEVED, tasks });
+    }
   } catch (error) {
     return res.status(500).json({ message: messages.ERROR.SERVER_ERROR, error: error.message });
   }
+
 };
 
-const getTasksByQuery = async (req, res) => {
-  const { status } = req.query;
-  try {
-    const where = { deleted: 0 };
-    if (status) where.status = status;
+// const getTasksByQuery = async (req, res) => {
+//   const { status } = req.query;
+//   try {
+//     const where = { deleted: 0 };
+//     if (status) where.status = status;
 
-    const tasks = await Task.findAll({
-      attributes: ['id', 'name', 'description', 'status', 'dueDate', 'createdAt', 'updatedAt'],
-      where,
-      include: [{ model: StatusMaster, attributes: ['code', 'name'], where: { deleted: 0 } }],
-    });
-    return res.status(200).json({ message: messages.SUCCESS.TASK_RETRIEVED, tasks });
-  } catch (error) {
-    return res.status(500).json({ message: messages.ERROR.SERVER_ERROR, error: error.message });
-  }
-};
+//     const tasks = await Task.findAll({
+//       attributes: ['id', 'name', 'description', 'status', 'dueDate', 'createdAt', 'updatedAt'],
+//       where,
+//       include: [{ model: StatusMaster, attributes: ['code', 'name'], where: { deleted: 0 } }],
+//     });
+//     return res.status(200).json({ message: messages.SUCCESS.TASK_RETRIEVED, tasks });
+//   } catch (error) {
+//     return res.status(500).json({ message: messages.ERROR.SERVER_ERROR, error: error.message });
+//   }
+// };
 
 const getTasksByStatus = async (req, res) => {
   const { status } = req.params;
@@ -104,7 +125,7 @@ const createTask = async (req, res) => {
   if (!name) {
     console.log('Missing name field');
     return res.status(400).json({ message: messages.ERROR.NAME_REQUIRED });
-  } 
+  }
 
   try {
     // Validate status if provided, default to TO_DO
@@ -112,8 +133,8 @@ const createTask = async (req, res) => {
     const statusExists = await StatusMaster.findOne({ where: { code: taskStatus, deleted: 0 } });
     if (!statusExists) {
       console.log(`Status ${taskStatus} not found in status_master`);
-      return res.status(400).json({ 
-        message: messages.ERROR.INVALID_STATUS, 
+      return res.status(400).json({
+        message: messages.ERROR.INVALID_STATUS,
         details: `Status '${taskStatus}' does not exist. Available statuses: ${await StatusMaster.findAll({ attributes: ['code'], where: { deleted: 0 } }).then(statuses => statuses.map(s => s.code).join(', '))}`
       });
     }
@@ -222,4 +243,4 @@ const deleteTask = async (req, res) => {
   }
 };
 
-export { getAllTasks, getTasksByQuery, getTasksByStatus, getTaskById, createTask, updateTask, patchTask, deleteTask };
+export { getAllTasks,  getTasksByStatus, getTaskById, createTask, updateTask, patchTask, deleteTask };

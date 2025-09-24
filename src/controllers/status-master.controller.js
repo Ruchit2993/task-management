@@ -1,4 +1,4 @@
-import StatusMaster from '../model/status-master-model.js';
+import StatusMaster from '../model/status-master.model.js';
 import messages from '../config/messages.js';
 
 const getAllStatuses = async (req, res) => {

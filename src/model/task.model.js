@@ -2,7 +2,7 @@ import { sequelize } from "../config/dbConnect.js";
 import { DataTypes, Model } from "sequelize";
 // import User from "./user-model.js";
 // import TeamMember from "./team-member-model.js";
-import StatusMaster from "./status-master-model.js";
+import StatusMaster from "./status-master.model.js";
 
 class Task extends Model {}
 

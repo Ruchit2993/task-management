@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import express from 'express';
 import { sequelize, testConnection } from '../config/dbConnect.js';
-import requestLogger from "../middlewares/requestLogger.js"
+import requestLogger from "../middlewares/request.logger.js"
 import router from '../modules/route.js'
 // import User from '../model/user-model.js';
 // import Task from '../model/task-model.js';

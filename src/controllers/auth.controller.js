@@ -1,4 +1,4 @@
-import User from '../model/user-model.js';
+import User from '../model/user.model.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import messages from '../config/messages.js';
@@ -22,13 +22,16 @@ const register = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+    const userCount = await User.count({ where: { deleted: 0 } });
+    const isAdmin = userCount === 0 ? 1 : 0;
+
     const user = await User.create({
       name,
       email,
       contact,
       password: hashedPassword,
       isFirstLogin: 1,
-      isAdmin: 0,
+      isAdmin,
       status: 1,
       deleted: 0,
     });
