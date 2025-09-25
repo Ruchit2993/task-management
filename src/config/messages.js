@@ -45,14 +45,14 @@ const messages = {
     NAME_REQUIRED: "Name is required.",
     INVALID_STATUS: "Invalid status code.",
     NOT_FIRST_LOGIN: "This endpoint is only for first-time password changes.",
-  },
-
-  INFO: {
+    INVALID_TEAM_MEMBERS: "One or more team member IDs are invalid or do not exist.",
     CHANGE_PASS: "Please change your password first",
     REQ_BODY: "Request body is missing or invalid",
-    NEWPASS_CONFPASS: "New password and confirm password are required",
+    NEWPASS_OLDPASS: "New password and Old password are required",
+    NEWPASS: "New password is required",
     REDIRECT_CHANGE_PASS: "Redirect to /auth/change-pass to reset password",
   },
+
 };
 
 export default messages;

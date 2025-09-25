@@ -77,15 +77,15 @@ const login = async (req, res) => {
 };
 
 const changePassword = async (req, res) => {
-  const { oldPassword, newPassword, confirmPassword } = req.body;
+  const { oldPassword, newPassword } = req.body;
 
-  if (!oldPassword || !newPassword || !confirmPassword) {
-    return res.status(400).json({ message: messages.ERROR.NEWPASS_CONFPASS });
+  if (!oldPassword || !newPassword) {
+    return res.status(400).json({ message: messages.ERROR.NEWPASS_OLDPASS });
   }
 
-  if (newPassword !== confirmPassword) {
-    return res.status(400).json({ message: messages.ERROR.PASSWORD_NOT_MATCH });
-  }
+  // if (newPassword !== confirmPassword) {
+  //   return res.status(400).json({ message: messages.ERROR.PASSWORD_NOT_MATCH });
+  // }
 
   try {
     const user = await User.findOne({ where: { id: req.user.id, deleted: 0 } });
@@ -113,15 +113,15 @@ const changePassword = async (req, res) => {
 };
 
 const firstChangePassword = async (req, res) => {
-  const { newPassword, confirmPassword } = req.body;
+  const { newPassword } = req.body;
 
-  if (!newPassword || !confirmPassword) {
-    return res.status(400).json({ message: messages.ERROR.NEWPASS_CONFPASS });
+  if (!newPassword) {
+    return res.status(400).json({ message: messages.ERROR.NEWPASS });
   }
 
-  if (newPassword !== confirmPassword) {
-    return res.status(400).json({ message: messages.ERROR.PASSWORD_NOT_MATCH });
-  }
+  // if (newPassword !== confirmPassword) {
+  //   return res.status(400).json({ message: messages.ERROR.PASSWORD_NOT_MATCH });
+  // }
 
   try {
     const user = await User.findOne({ where: { id: req.user.id, deleted: 0 } });
@@ -160,7 +160,7 @@ const forgotPassword = async (req, res) => {
       return res.status(404).json({ message: messages.ERROR.USER_NOT_FOUND });
     }
 
-    return res.status(200).json({ message: messages.INFO.REDIRECT_CHANGE_PASS });
+    return res.status(200).json({ message: messages.ERROR.REDIRECT_CHANGE_PASS });
   } catch (error) {
     return res.status(500).json({ message: messages.ERROR.SERVER_ERROR, error: error.message });
   }

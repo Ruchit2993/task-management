@@ -1,9 +1,11 @@
 import Task from '../model/task.model.js';
 import StatusMaster from '../model/status-master.model.js';
+import TeamMember from '../model/team-member.model.js';
+import User from '../model/user.model.js'; // Corrected import to match file name
+import { sequelize } from '../config/dbConnect.js';
 import messages from '../config/messages.js';
 
 const getAllTasks = async (req, res) => {
-
   try {
     if (req.query) {
       const { status } = req.query;
@@ -20,9 +22,7 @@ const getAllTasks = async (req, res) => {
       } catch (error) {
         return res.status(500).json({ message: messages.ERROR.SERVER_ERROR, error: error.message });
       }
-
-    }
-    else {
+    } else {
       const tasks = await Task.findAll({
         attributes: ['id', 'name', 'description', 'status', 'dueDate', 'createdAt', 'updatedAt'],
         where: { deleted: 0 },
@@ -33,25 +33,7 @@ const getAllTasks = async (req, res) => {
   } catch (error) {
     return res.status(500).json({ message: messages.ERROR.SERVER_ERROR, error: error.message });
   }
-
 };
-
-// const getTasksByQuery = async (req, res) => {
-//   const { status } = req.query;
-//   try {
-//     const where = { deleted: 0 };
-//     if (status) where.status = status;
-
-//     const tasks = await Task.findAll({
-//       attributes: ['id', 'name', 'description', 'status', 'dueDate', 'createdAt', 'updatedAt'],
-//       where,
-//       include: [{ model: StatusMaster, attributes: ['code', 'name'], where: { deleted: 0 } }],
-//     });
-//     return res.status(200).json({ message: messages.SUCCESS.TASK_RETRIEVED, tasks });
-//   } catch (error) {
-//     return res.status(500).json({ message: messages.ERROR.SERVER_ERROR, error: error.message });
-//   }
-// };
 
 const getTasksByStatus = async (req, res) => {
   const { status } = req.params;
@@ -87,38 +69,8 @@ const getTaskById = async (req, res) => {
   }
 };
 
-// const createTask = async (req, res) => {
-//   const { name, description, due_date } = req.body;
-
-//   if (!name) {
-//     return res.status(400).json({ message: messages.ERROR.NAME_REQUIRED });
-//   }
-
-//   try {
-//     // Validate status if provided, default to TO_DO
-//     const status = req.body.status || 'TO_DO';
-//     const statusExists = await StatusMaster.findOne({ where: { code: status, deleted: 0 } });
-//     if (!statusExists) {
-//       return res.status(400).json({ message: messages.ERROR.INVALID_STATUS });
-//     }
-
-//     const task = await Task.create({
-//       name,
-//       description,
-//       status,
-//       dueDate: due_date,
-//       createdBy: req.user.id,
-//       deleted: 0,
-//     });
-
-//     return res.status(201).json({ message: messages.SUCCESS.TASK_CREATED, task });
-//   } catch (error) {
-//     return res.status(500).json({ message: messages.ERROR.SERVER_ERROR, error: error.message });
-//   }
-// };
-
 const createTask = async (req, res) => {
-  const { name, description, due_date, status } = req.body;
+  const { name, description, due_date, status, teamMembers } = req.body;
 
   console.log('Request Body:', req.body); // Log body for debugging
 
@@ -139,13 +91,45 @@ const createTask = async (req, res) => {
       });
     }
 
-    const task = await Task.create({
-      name,
-      description,
-      status: taskStatus,
-      dueDate: due_date,
-      createdBy: req.user.id,
-      deleted: 0,
+    // Validate teamMembers if provided
+    if (teamMembers && Array.isArray(teamMembers) && teamMembers.length > 0) {
+      const users = await User.findAll({
+        where: {
+          id: teamMembers,
+          deleted: 0,
+        },
+      });
+      if (users.length !== teamMembers.length) {
+        return res.status(400).json({ message: messages.ERROR.INVALID_TEAM_MEMBERS });
+      }
+    }
+
+    // Create task and team members in a transaction
+    const task = await sequelize.transaction(async (t) => {
+      const newTask = await Task.create(
+        {
+          name,
+          description,
+          status: taskStatus,
+          dueDate: due_date,
+          createdBy: req.user.id,
+          deleted: 0,
+        },
+        { transaction: t }
+      );
+
+      // Create team members if provided
+      if (teamMembers && Array.isArray(teamMembers) && teamMembers.length > 0) {
+        const teamMemberData = teamMembers.map((userId) => ({
+          userId,
+          taskId: newTask.id,
+          createdBy: req.user.id,
+          deleted: 0,
+        }));
+        await TeamMember.bulkCreate(teamMemberData, { transaction: t });
+      }
+
+      return newTask;
     });
 
     return res.status(201).json({ message: messages.SUCCESS.TASK_CREATED, task });
@@ -243,4 +227,4 @@ const deleteTask = async (req, res) => {
   }
 };
 
-export { getAllTasks,  getTasksByStatus, getTaskById, createTask, updateTask, patchTask, deleteTask };
+export { getAllTasks, getTasksByStatus, getTaskById, createTask, updateTask, patchTask, deleteTask };
