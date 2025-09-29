@@ -2,6 +2,7 @@ import { sequelize } from "../config/dbConnect.js";
 import { DataTypes, Model } from "sequelize";
 import TeamMember from "./team-member.model.js";
 import Task from "./task.model.js";
+import Comment from "./comments.model.js";
 
 class User extends Model {}
 
@@ -103,6 +104,8 @@ Task.belongsTo(User, { foreignKey: "createdBy", as: "creator" });
 Task.belongsTo(User, { foreignKey: "updatedBy", as: "updater" });
 Task.belongsTo(User, { foreignKey: "deletedBy", as: "deleter" });
 
+User.hasMany(Comment, { foreignKey: "userId" });
+Comment.belongsTo(User, { foreignKey: "userId" });
 
 export default User;
 

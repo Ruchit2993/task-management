@@ -1,7 +1,8 @@
 import Task from '../model/task.model.js';
 import StatusMaster from '../model/status-master.model.js';
 import TeamMember from '../model/team-member.model.js';
-import User from '../model/user.model.js'; // Corrected import to match file name
+import User from '../model/user.model.js';
+import Comment from '../model/comments.model.js';
 import { sequelize } from '../config/dbConnect.js';
 import messages from '../config/messages.js';
 
@@ -178,7 +179,7 @@ const updateTask = async (req, res) => {
 
 const patchTask = async (req, res) => {
   const { id } = req.params;
-  const { name, description, status, due_date } = req.body;
+  const { name, description, status, due_date, comment } = req.body;
 
   try {
     const task = await Task.findOne({ where: { id, deleted: 0 } });
@@ -186,26 +187,59 @@ const patchTask = async (req, res) => {
       return res.status(404).json({ message: messages.ERROR.TASK_NOT_FOUND });
     }
 
-    // Validate status if provided
-    if (status) {
-      const statusExists = await StatusMaster.findOne({ where: { code: status, deleted: 0 } });
-      if (!statusExists) {
-        return res.status(400).json({ message: messages.ERROR.INVALID_STATUS });
+    // Admin: Update task fields, reject comment
+    if (req.user.isAdmin) {
+      if (comment) {
+        return res.status(400).json({ message: messages.ERROR.ADMIN_COMMENT_NOT_ALLOWED });
       }
+
+      // Validate status if provided
+      if (status) {
+        const statusExists = await StatusMaster.findOne({ where: { code: status, deleted: 0 } });
+        if (!statusExists) {
+          return res.status(400).json({
+            message: messages.ERROR.INVALID_STATUS,
+            details: `Status '${status}' does not exist. Available statuses: ${await StatusMaster.findAll({ attributes: ['code'], where: { deleted: 0 } }).then(statuses => statuses.map(s => s.code).join(', '))}`
+          });
+        }
+      }
+
+      const updateData = { updatedBy: req.user.id };
+      if (name) updateData.name = name;
+      if (description !== undefined) updateData.description = description;
+      if (status) updateData.status = status;
+      if (due_date) updateData.dueDate = due_date;
+
+      // Only update if at least one field is provided
+      if (Object.keys(updateData).length > 1) { // updatedBy is always included
+        await task.update(updateData);
+      }
+
+      return res.status(200).json({ message: messages.SUCCESS.TASK_UPDATED, task });
+    } else {
+      // Non-admin: Only add comment, reject task fields
+      if (!comment) {
+        return res.status(400).json({ message: messages.ERROR.COMMENT_REQUIRED });
+      }
+      if (name || description !== undefined || status || due_date) {
+        return res.status(400).json({ message: messages.ERROR.NON_ADMIN_TASK_FIELDS_NOT_ALLOWED });
+      }
+
+      await Comment.create({
+        userId: req.user.id,
+        taskId: id,
+        comment,
+        createdBy: req.user.id,
+        deleted: 0,
+      });
+
+      return res.status(200).json({ message: messages.SUCCESS.COMMENT_ADDED });
     }
-
-    const updateData = { updatedBy: req.user.id };
-    if (name) updateData.name = name;
-    if (description !== undefined) updateData.description = description;
-    if (status) updateData.status = status;
-    if (due_date) updateData.dueDate = due_date;
-
-    await task.update(updateData);
-    return res.status(200).json({ message: messages.SUCCESS.TASK_UPDATED, task });
   } catch (error) {
+    console.error('Error in patchTask:', error.message);
     return res.status(500).json({ message: messages.ERROR.SERVER_ERROR, error: error.message });
   }
-};
+}; 
 
 const deleteTask = async (req, res) => {
   const { id } = req.params;

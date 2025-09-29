@@ -3,6 +3,7 @@ import { DataTypes, Model } from "sequelize";
 // import User from "./user-model.js";
 // import TeamMember from "./team-member-model.js";
 import StatusMaster from "./status-master.model.js";
+import Comment from "./comments.model.js";
 
 class Task extends Model {}
 
@@ -74,6 +75,10 @@ Task.init(
 
 Task.belongsTo(StatusMaster, { foreignKey: "status", targetKey: "code" });
 StatusMaster.hasMany(Task, { foreignKey: "status", sourceKey: "code" });
+Task.hasMany(Comment, { foreignKey: "taskId" });
+
+Comment.belongsTo(Task, { foreignKey: "taskId" });
+// Task.hasMany(Comment, { foreignKey: "taskId" });
 
 export default Task;
 

@@ -17,6 +17,7 @@ const messages = {
     TASK_RETRIEVED: "Task(s) retrieved successfully.",
     TASK_UPDATED: "Task updated successfully.",
     TASK_DELETED: "Task deleted successfully.",
+    COMMENT_ADDED: "Comment added successfully.",
   },
 
   ERROR: {
@@ -51,6 +52,8 @@ const messages = {
     NEWPASS_OLDPASS: "New password and Old password are required",
     NEWPASS: "New password is required",
     REDIRECT_CHANGE_PASS: "Redirect to /auth/change-pass to reset password",
+    COMMENT_REQUIRED: "Comment is required for non-admin users.",
+    ADMIN_COMMENT_NOT_ALLOWED: "Admins cannot add comments via this endpoint.",
   },
 
 };

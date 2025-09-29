@@ -14,13 +14,13 @@ import { verifyToken, isAdmin } from "../middlewares/auth.middleware.js";
 const router = express.Router();
 
 router.get("/", verifyToken, getAllTasks);
-// router.get("/", verifyToken, getTasksByQuery);
+// router.get("/", verifyToken, getTasksByQuery); // this Route is for Query-based filtering done in the above route    
 router.get("/status/:status", verifyToken, getTasksByStatus);
 router.get("/:id", verifyToken, getTaskById);
 
 router.post("/", verifyToken, isAdmin, createTask);
 router.put("/:id", verifyToken, isAdmin, updateTask);
-router.patch("/:id", verifyToken, isAdmin, patchTask);
+router.patch("/:id", verifyToken, patchTask);
 router.delete("/:id", verifyToken, isAdmin, deleteTask);
 
 
