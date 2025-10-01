@@ -53,7 +53,7 @@ const messages = {
     NEWPASS: "New password is required",
     REDIRECT_CHANGE_PASS: "Redirect to /auth/change-pass to reset password",
     COMMENT_REQUIRED: "Comment is required for non-admin users.",
-    ADMIN_COMMENT_NOT_ALLOWED: "Admins cannot add comments via this endpoint.",
+    ADMIN_COMMENT_NOT_ALLOWED: "Admins cannot add comments.",
   },
 
 };
