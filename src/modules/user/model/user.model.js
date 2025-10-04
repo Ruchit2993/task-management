@@ -1,8 +1,8 @@
-import { sequelize } from "../config/dbConnect.js";
+import { sequelize } from "../../../config/dbConnect.js";
 import { DataTypes, Model } from "sequelize";
-import TeamMember from "./team-member.model.js";
-import Task from "./task.model.js";
-import Comment from "./comments.model.js";
+import TeamMember from "../../team-member/model/team-member.model.js";
+import Task from "../../task/model/task.model.js";
+import Comment from "../../comments/model/comments.model.js";
 
 class User extends Model {}
 
@@ -108,21 +108,3 @@ User.hasMany(Comment, { foreignKey: "userId" });
 Comment.belongsTo(User, { foreignKey: "userId" });
 
 export default User;
-
-/*CREATE TABLE IF NOT EXISTS `users` (`id` INTEGER NOT NULL auto_increment , 
-`name` VARCHAR(50) NOT NULL,
-`email` VARCHAR(50) NOT NULL UNIQUE, 
-`contact` VARCHAR(12) UNIQUE, 
-`password` VARCHAR(255) NOT NULL, 
-`is_admin` TINYINT NOT NULL DEFAULT 1, 
-`is_first_login` TINYINT NOT NULL DEFAULT 0,
-`status` TINYINT NOT NULL DEFAULT 1, 
-`created_at` DATETIME,
-`updated_at` DATETIME,
-`deleted_at` DATETIME,
-`created_by` INTEGER, 
-`updated_by` INTEGER, 
-`deleted_by` INTEGER,
-PRIMARY KEY (`id`)) ENGINE=InnoDB;
-SHOW INDEX FROM `users`
-*/

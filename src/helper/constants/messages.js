@@ -34,6 +34,7 @@ const messages = {
     NAME_EMAIL_PASS_REQUIRED: "Name, email, and password are required",
     PASSWORD_NOT_MATCH: "Passwords do not match",
     INVALID_OLD_PASS: "Invalid old password",
+    NON_ADMIN_TASK_FIELDS_NOT_ALLOWED: 'Non-admin users can only add comments or update status with a comment.',
     NO_TOKEN: "No token provided",
     INVALID_TOKEN: "Invalid token",
     TOKEN_FORMAT: "Token format invalid",
@@ -54,6 +55,8 @@ const messages = {
     REDIRECT_CHANGE_PASS: "Redirect to /auth/change-pass to reset password",
     COMMENT_REQUIRED: "Comment is required for non-admin users.",
     ADMIN_COMMENT_NOT_ALLOWED: "Admins cannot add comments.",
+    COMMENT_REQUIRED_FOR_STATUS: 'Comment is required when updating status for non-admin users',
+    UNAUTHORIZED: 'You can only change your own password',
   },
 
 };

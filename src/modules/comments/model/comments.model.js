@@ -1,7 +1,5 @@
-import { sequelize } from "../config/dbConnect.js";
+import { sequelize } from "../../../config/dbConnect.js";
 import { DataTypes, Model } from "sequelize";
-import Task from "./task.model.js";
-import User from "./user.model.js";
 
 class Comment extends Model {}
 
@@ -69,18 +67,3 @@ Comment.init(
 
 
 export default Comment;
-/*
-CREATE TABLE IF NOT EXISTS `comments`
-(`id` INTEGER NOT NULL auto_increment ,
-`user_id` INTEGER NOT NULL,
-`task_id` INTEGER NOT NULL,
-`comment` TEXT NOT NULL,
-`created_at` DATETIME NOT NULL,
-`updated_at` DATETIME NOT NULL,
-`deleted` TINYINT NOT NULL DEFAULT 0,
-`created_by` INTEGER,
-`updated_by` INTEGER,
-PRIMARY KEY (`id`),
-FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-FOREIGN KEY (`task_id`) REFERENCES `tasks` (`id`) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE=InnoDB;
-*/

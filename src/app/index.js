@@ -1,12 +1,9 @@
 import dotenv from 'dotenv';
 import express from 'express';
 import { sequelize, testConnection } from '../config/dbConnect.js';
-import requestLogger from "../middlewares/request.logger.js"
-import router from '../modules/route.js'
-// import User from '../model/user-model.js';
-// import Task from '../model/task-model.js';
-// import StatusMaster from '../model/status-master-model.js';
-// import TeamMember from '../model/team-member-model.js';
+import requestLogger from "../helper/middlewares/request.logger.js"
+import router from '../route/route.js';
+
 dotenv.config();
 
 const PORT = process.env.PORT
@@ -16,12 +13,6 @@ app.use(express.json())
 app.use('/',requestLogger, router);
 
 testConnection();
-
-// User.sync({ force: true });
-// Task.sync({ force: true });
-// StatusMaster.sync({alter: true});
-// TeamMember.sync({force: true});
-
 
 // await sequelize.sync({force: true}); 
 await sequelize.sync({alter: true}); 

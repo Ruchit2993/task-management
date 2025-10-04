@@ -1,7 +1,7 @@
 import 'dotenv/config';
 // import dotenv from 'dotenv';
 import Sequelize from 'sequelize';
-import messages from './messages.js';
+import messages from '../helper/constants/messages.js';
 // dotenv.config();
 
 const sequelize = new Sequelize(process.env.DB_DBNAME, process.env.DB_USERNAME, process.env.DB_PASSWWORD, {

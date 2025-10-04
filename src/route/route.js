@@ -1,9 +1,8 @@
 import express from "express";
-import { verifyToken, isAdmin } from '../middlewares/auth.middleware.js';
-import authRoutes from "./auth.routes.js";
-import userRoutes from "./user.routes.js";
-import statusRoutes from "./status.routes.js";
-import taskRoutes from "./task.routes.js";
+import authRoutes from "../modules/auth/route/auth.routes.js";
+import userRoutes from "../modules/user/route/user.routes.js";
+import statusRoutes from "../modules/status-master/route/status.routes.js";
+import taskRoutes from "../modules/task/route/task.routes.js";
 
 const router = express.Router();
 

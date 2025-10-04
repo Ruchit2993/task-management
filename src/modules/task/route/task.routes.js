@@ -1,15 +1,6 @@
 import express from "express";
-import {
-  getAllTasks,
-//   getTasksByQuery,
-  getTasksByStatus,
-  getTaskById,
-  createTask,
-  updateTask,
-  patchTask,
-  deleteTask
-} from "../controllers/task.controller.js";
-import { verifyToken, isAdmin } from "../middlewares/auth.middleware.js";
+import {getAllTasks, getTasksByStatus, getTaskById, createTask, updateTask, patchTask, deleteTask } from "../controller/task.controller.js";
+import { verifyToken, isAdmin } from "../../../helper/middlewares/auth.middleware.js";
 
 const router = express.Router();
 
@@ -20,7 +11,7 @@ router.get("/:id", verifyToken, getTaskById);
 
 router.post("/", verifyToken, isAdmin, createTask);
 router.put("/:id", verifyToken, isAdmin, updateTask);
-router.patch("/:id", verifyToken, patchTask);
+router.patch("/:id", verifyToken, patchTask); 
 router.delete("/:id", verifyToken, isAdmin, deleteTask);
 
 

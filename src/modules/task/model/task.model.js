@@ -1,10 +1,13 @@
-import { sequelize } from "../config/dbConnect.js";
+import { sequelize } from "../../../config/dbConnect.js";
 import { DataTypes, Model } from "sequelize";
-// import Task from "./task-model.js";
+// import User from "./user-model.js";
+// import TeamMember from "./team-member-model.js";
+import StatusMaster from "../../status-master/model/status-master.model.js";
+import Comment from "../../comments/model/comments.model.js";
 
-class StatusMaster extends Model {}
+class Task extends Model {}
 
-StatusMaster.init(
+Task.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -12,20 +15,21 @@ StatusMaster.init(
       primaryKey: true,
       allowNull: false,
     },
-    code: {
-      type: DataTypes.STRING(50),
-      allowNull: false,
-      defaultValue: "TO_DO",
-    },
     name: {
       type: DataTypes.STRING(50),
       allowNull: false,
-      defaultValue: "To Do",
+    },
+    description: {
+      type: DataTypes.TEXT,
+      allowNull: true,
     },
     status: {
-      type: DataTypes.TINYINT,
+      type: DataTypes.STRING(50),
+      allowNull: false,
+    },
+    dueDate: {
+      type: DataTypes.DATE,
       allowNull: true,
-      defaultValue: 1,
     },
     deleted: {
       type: DataTypes.TINYINT,
@@ -61,30 +65,19 @@ StatusMaster.init(
   },
   {
     sequelize,
-    modelName: "StatusMaster",
-    tableName: "status_master",
+    modelName: "Task",
+    tableName: "tasks",
     timestamps: true,
     underscored: true,
     paranoid: false,
-      indexes: [
-    { unique: true, fields: ["code"] }
-      ]
   }
 );
 
-export default StatusMaster;
+Task.belongsTo(StatusMaster, { foreignKey: "status", targetKey: "code" });
+StatusMaster.hasMany(Task, { foreignKey: "status", sourceKey: "code" });
+Task.hasMany(Comment, { foreignKey: "taskId" });
 
+Comment.belongsTo(Task, { foreignKey: "taskId" });
+// Task.hasMany(Comment, { foreignKey: "taskId" });
 
-/*
-Executing (default): CREATE TABLE IF NOT EXISTS `status_master` (`status_id` INTEGER NOT NULL auto_increment ,
-`code` VARCHAR(50) NOT NULL DEFAULT 'TO_DO',
-`status_name` VARCHAR(50) NOT NULL DEFAULT 'to_do',
-`status` TINYINT DEFAULT 1,
-`created_at` DATETIME,
-`updated_at` DATETIME,
-`deleted_at` DATETIME,
-`created_by` INTEGER,
-`updated_by` INTEGER,
-`deleted_by` INTEGER, 
-PRIMARY KEY (`status_id`)) ENGINE=InnoDB;
-*/
+export default Task;
