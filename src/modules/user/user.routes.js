@@ -1,7 +1,7 @@
 import express from "express";
-import {getAllUsers,getUserById,updateUser,patchUser,deleteUser} from "../controller/user.ontroller.js";
-import { verifyToken, isAdmin } from "../../../helper/middlewares/auth.middleware.js";
-import { register } from "../../auth/controller/auth.controller.js";
+import {getAllUsers,getUserById,updateUser,patchUser,deleteUser} from "./user.controller.js";
+import { verifyToken, isAdmin } from "../../helper/middlewares/auth.middleware.js";
+import { register } from "../auth/auth.controller.js";
 
 const router = express.Router();
 

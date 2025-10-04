@@ -1,9 +1,9 @@
-import User from '../../user/model/user.model.js';
+import User from '../user/user.model.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import messages from '../../../helper/constants/messages.js';
-import { successResponse, errorResponse } from '../../../helper/responce-builder/responseBuilder.js';
-import { validateRegister, validateLogin, validateChangePassword, validateFirstChangePassword, validateForgotPassword, validateResetPassword } from '../validation/authValidation.js';
+import messages from '../../helper/constants/messages.js';
+import { successResponse, errorResponse } from '../../helper/responce-builder/responseBuilder.js';
+import { validateRegister, validateLogin, validateChangePassword, validateFirstChangePassword, validateForgotPassword, validateResetPassword } from './authValidation.js';
 
 const register = async (req, res) => {
   const { error } = validateRegister(req.body);

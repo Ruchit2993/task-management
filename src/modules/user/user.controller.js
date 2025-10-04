@@ -1,8 +1,8 @@
-import User from '../model/user.model.js';
-import messages from '../../../helper/constants/messages.js';
+import User from './user.model.js';
+import messages from '../../helper/constants/messages.js';
 import bcrypt from 'bcrypt';
-import { successResponse, errorResponse } from '../../../helper/responce-builder/responseBuilder.js';
-import { validateUser, validateUserUpdate, validateUserPatch } from '../validation/userValidation.js';
+import { successResponse, errorResponse } from '../../helper/responce-builder/responseBuilder.js';
+import { validateUser, validateUserUpdate, validateUserPatch } from './userValidation.js';
 
 const getAllUsers = async (req, res) => {
   try {

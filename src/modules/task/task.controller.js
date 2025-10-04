@@ -1,12 +1,12 @@
-import Task from '../model/task.model.js';
-import StatusMaster from '../../status-master/model/status-master.model.js';
-import TeamMember from '../../team-member/model/team-member.model.js';
-import User from '../../user/model/user.model.js';
-import Comment from '../../comments/model/comments.model.js';
-import { sequelize } from '../../../config/dbConnect.js';
-import messages from '../../../helper/constants/messages.js';
-import { successResponse, errorResponse } from '../../../helper/responce-builder/responseBuilder.js';
-import { validateTask, validateTaskUpdate, validateTaskPatch } from '../validation/taskValidation.js';
+import Task from './task.model.js';
+import StatusMaster from '../status-master/status-master.model.js';
+import TeamMember from '../team-member/team-member.model.js';
+import User from '../user/user.model.js';
+import Comment from '../comments/comments.model.js';
+import { sequelize } from '../../config/dbConnect.js';
+import messages from '../../helper/constants/messages.js';
+import { successResponse, errorResponse } from '../../helper/responce-builder/responseBuilder.js';
+import { validateTask, validateTaskUpdate, validateTaskPatch } from './taskValidation.js';
 
 const getAllTasks = async (req, res) => {
   try {

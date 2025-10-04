@@ -1,8 +1,8 @@
 import express from "express";
-import authRoutes from "../modules/auth/route/auth.routes.js";
-import userRoutes from "../modules/user/route/user.routes.js";
-import statusRoutes from "../modules/status-master/route/status.routes.js";
-import taskRoutes from "../modules/task/route/task.routes.js";
+import authRoutes from "../modules/auth/auth.routes.js";
+import userRoutes from "../modules/user/user.routes.js";
+import statusRoutes from "../modules/status-master/status.routes.js";
+import taskRoutes from "../modules/task/task.routes.js";
 
 const router = express.Router();
 

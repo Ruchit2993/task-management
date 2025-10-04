@@ -1,6 +1,6 @@
-import { sequelize } from "../../../config/dbConnect.js";
+import { sequelize } from "../../config/dbConnect.js";
 import { DataTypes, Model } from "sequelize";
-import Task from "../../task/model/task.model.js";
+import Task from "../task/task.model.js";
 
 class TeamMember extends Model {}
 

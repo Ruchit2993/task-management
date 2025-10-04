@@ -1,6 +1,6 @@
 import express from "express";
-import {getAllStatuses,getStatusByCode,createStatus,updateStatus,patchStatus,deleteStatus} from "../controller/status-master.controller.js";
-import { verifyToken, isAdmin } from "../../../helper/middlewares/auth.middleware.js";
+import {getAllStatuses,getStatusByCode,createStatus,updateStatus,patchStatus,deleteStatus} from "./status-master.controller.js";
+import { verifyToken, isAdmin } from "../../helper/middlewares/auth.middleware.js";
 
 const router = express.Router();
 

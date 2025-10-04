@@ -1,7 +1,7 @@
-import StatusMaster from '../model/status-master.model.js';
-import messages from '../../../helper/constants/messages.js';
-import { successResponse, errorResponse } from '../../../helper/responce-builder/responseBuilder.js';
-import { validateStatus, validateStatusUpdate, validateStatusPatch } from '../validation/statusValidation.js';
+import StatusMaster from './status-master.model.js';
+import messages from '../../helper/constants/messages.js';
+import { successResponse, errorResponse } from '../../helper/responce-builder/responseBuilder.js';
+import { validateStatus, validateStatusUpdate, validateStatusPatch } from './statusValidation.js';
 
 const getAllStatuses = async (req, res) => {
   try {
